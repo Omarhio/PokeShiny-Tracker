@@ -1,14 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import MainLayout from '../layouts/MainLayout'
 import PokemonCard from '../components/PokemonCard'
 import { pokemonList } from '../data/PokemonList'
 
-const itemsPerPage = 50;
+const itemsPerPage = 24;
 
 export default function Captures() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const totalPages = Math.ceil(pokemonList.length / itemsPerPage);
+  const [selectedGeneration, setSelectedGeneration] = useState("all");
 
   const filteredPokemons = pokemonList.filter((pokemon) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
@@ -17,8 +17,24 @@ export default function Captures() {
 
     const isNameMatch = pokemon.name.toLowerCase().includes(lowerCaseSearchTerm);
 
-    return isPokedexMatch || isNameMatch;
+    const isGenerationMatch =
+      selectedGeneration === "all" ||
+      (selectedGeneration === "1" && pokemon.pokedexNumber <= 151) ||
+      (selectedGeneration === "2" && pokemon.pokedexNumber > 151 && pokemon.pokedexNumber <= 251) ||
+      (selectedGeneration === "3" && pokemon.pokedexNumber > 251 && pokemon.pokedexNumber <= 386) ||
+      (selectedGeneration === "4" && pokemon.pokedexNumber > 387 && pokemon.pokedexNumber <= 493) ||
+      (selectedGeneration === "5" && pokemon.pokedexNumber > 494 && pokemon.pokedexNumber <= 649);
+
+    return (isPokedexMatch || isNameMatch) && isGenerationMatch;
   });
+
+  const totalPages = Math.ceil(filteredPokemons.length / itemsPerPage);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const selectedPokemons = filteredPokemons.slice(startIndex, startIndex + itemsPerPage);
@@ -40,7 +56,7 @@ export default function Captures() {
       <h1 className="text-4xl font-bold text-center my-8">Mes Pokémon Shiny Capturés</h1>
       
       {/* Champ de recherche */}
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-4">
         <input
           type="text"
           placeholder="Rechercher par nom ou numéro de Pokédex"
@@ -48,6 +64,22 @@ export default function Captures() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="px-4 py-2 border border-gray-300 rounded-md shadow-sm w-full max-w-md"
         />
+      </div>
+
+      {/* Filtre par génération */}
+      <div className="flex justify-center mb-8">
+        <select
+          value={selectedGeneration}
+          onChange={(e) => setSelectedGeneration(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+        >
+          <option value="all">Toutes les générations</option>
+          <option value="1">1ère génération</option>
+          <option value="2">2e génération</option>
+          <option value="3">3e génération</option>
+          <option value="4">4e génération</option>
+          <option value="5">5e génération</option>
+        </select>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 container mx-auto">
@@ -62,31 +94,33 @@ export default function Captures() {
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex justify-center items-center mt-8 mb-16 space-x-4">
-        <button
-          onClick={handlePreviousPage}
-          disabled={currentPage === 1}
-          className={`px-6 py-2 rounded-md transition-all duration-300 ease-in-out ${
-            currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
-          }`}
-        >
-          Précédent
-        </button>
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center mt-8 mb-16 space-x-4">
+          <button
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            className={`px-6 py-2 rounded-md transition-all duration-300 ease-in-out ${
+              currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
+            }`}
+          >
+            Précédent
+          </button>
 
-        <span className="text-lg">
-          Page {currentPage} sur {totalPages}
-        </span>
+          <span className="text-lg">
+            Page {currentPage} sur {totalPages}
+          </span>
 
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className={`px-6 py-2 rounded-md transition-all duration-300 ease-in-out ${
-            currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
-          }`}
-        >
-          Suivant
-        </button>
-      </div>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className={`px-6 py-2 rounded-md transition-all duration-300 ease-in-out ${
+              currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
+            }`}
+          >
+            Suivant
+          </button>
+        </div>
+      )}
     </MainLayout>
   )
 }
