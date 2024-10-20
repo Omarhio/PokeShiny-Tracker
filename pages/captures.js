@@ -7,10 +7,21 @@ const itemsPerPage = 50;
 
 export default function Captures() {
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState("");
   const totalPages = Math.ceil(pokemonList.length / itemsPerPage);
 
+  const filteredPokemons = pokemonList.filter((pokemon) => {
+    const lowerCaseSearchTerm = searchTerm.toLowerCase();
+
+    const isPokedexMatch = pokemon.pokedexNumber.toString() === searchTerm;
+
+    const isNameMatch = pokemon.name.toLowerCase().includes(lowerCaseSearchTerm);
+
+    return isPokedexMatch || isNameMatch;
+  });
+
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedPokemons = pokemonList.slice(startIndex, startIndex + itemsPerPage);
+  const selectedPokemons = filteredPokemons.slice(startIndex, startIndex + itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -28,6 +39,17 @@ export default function Captures() {
     <MainLayout>
       <h1 className="text-4xl font-bold text-center my-8">Mes Pokémon Shiny Capturés</h1>
       
+      {/* Champ de recherche */}
+      <div className="flex justify-center mb-8">
+        <input
+          type="text"
+          placeholder="Rechercher par nom ou numéro de Pokédex"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm w-full max-w-md"
+        />
+      </div>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 container mx-auto">
         {selectedPokemons.map((pokemon) => (
           <PokemonCard
