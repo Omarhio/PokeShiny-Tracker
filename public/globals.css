@@ -33,7 +33,7 @@ body {
 }
 
 .button {
-  background-color: #4A90E2;
+  background-color: #0056b3;
   color: white;
   padding: 12px 24px;
   border-radius: 8px;
@@ -42,7 +42,7 @@ body {
 }
 
 .button:hover {
-  background-color: #357ABD;
+  background-color: #004090;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
   cursor: pointer;
 }
@@ -50,4 +50,8 @@ body {
 .button:disabled {
   background-color: #D3D3D3;
   cursor: not-allowed;
+}
+
+h1, h2, h3, p, label {
+  color: #111111;
 }

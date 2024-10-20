@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import MainLayout from '../layouts/MainLayout';
-import PokemonCard from '../components/PokemonCard';
-import { pokemonList } from '../data/PokemonList';
+import { useState, useEffect } from "react";
+import MainLayout from "../layouts/MainLayout";
+import PokemonCard from "../components/PokemonCard";
+import { pokemonList } from "../data/PokemonList";
 
 const itemsPerPage = 24;
 
@@ -15,16 +15,27 @@ export default function Captures() {
   const filteredPokemons = pokemonList.filter((pokemon) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
     const isPokedexMatch = pokemon.pokedexNumber.toString() === searchTerm;
-    const isNameMatch = pokemon.name.toLowerCase().includes(lowerCaseSearchTerm);
+    const isNameMatch = pokemon.name
+      .toLowerCase()
+      .includes(lowerCaseSearchTerm);
     const isGenerationMatch =
       selectedGeneration === "all" ||
       (selectedGeneration === "1" && pokemon.pokedexNumber <= 151) ||
-      (selectedGeneration === "2" && pokemon.pokedexNumber > 151 && pokemon.pokedexNumber <= 251) ||
-      (selectedGeneration === "3" && pokemon.pokedexNumber > 251 && pokemon.pokedexNumber <= 386) ||
-      (selectedGeneration === "4" && pokemon.pokedexNumber > 387 && pokemon.pokedexNumber <= 493) ||
-      (selectedGeneration === "5" && pokemon.pokedexNumber > 494 && pokemon.pokedexNumber <= 649);
+      (selectedGeneration === "2" &&
+        pokemon.pokedexNumber > 151 &&
+        pokemon.pokedexNumber <= 251) ||
+      (selectedGeneration === "3" &&
+        pokemon.pokedexNumber > 251 &&
+        pokemon.pokedexNumber <= 386) ||
+      (selectedGeneration === "4" &&
+        pokemon.pokedexNumber > 387 &&
+        pokemon.pokedexNumber <= 493) ||
+      (selectedGeneration === "5" &&
+        pokemon.pokedexNumber > 494 &&
+        pokemon.pokedexNumber <= 649);
 
-    const isTypeMatch = selectedType === "all" || pokemon.type.includes(selectedType);
+    const isTypeMatch =
+      selectedType === "all" || pokemon.type.includes(selectedType);
 
     return (isPokedexMatch || isNameMatch) && isGenerationMatch && isTypeMatch;
   });
@@ -47,7 +58,10 @@ export default function Captures() {
   }, [currentPage, totalPages]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedPokemons = sortedPokemons.slice(startIndex, startIndex + itemsPerPage);
+  const selectedPokemons = sortedPokemons.slice(
+    startIndex,
+    startIndex + itemsPerPage
+  );
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -63,13 +77,16 @@ export default function Captures() {
 
   return (
     <MainLayout>
-      <h1 className="text-4xl font-bold text-center my-8">Mes Pokémon Shiny Capturés</h1>
-      
+      <h1 className="text-4xl font-bold text-center my-8">
+        Mes Pokémon Shiny Capturés
+      </h1>
+
       {/* Champ de recherche */}
       <div className="flex justify-center mb-4">
         <input
           type="text"
           placeholder="Rechercher par nom ou numéro de Pokédex"
+          aria-label="Rechercher un Pokémon par son nom ou son numéro de Pokédex"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="px-4 py-2 border border-gray-300 rounded-md shadow-sm w-full max-w-md"
@@ -138,22 +155,28 @@ export default function Captures() {
           <button
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
+            aria-label="Page précédente"
             className={`px-6 py-2 rounded-md transition-all duration-300 ease-in-out ${
-              currentPage === 1 ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
+              currentPage === 1
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600 text-white"
             }`}
           >
             Précédent
           </button>
 
-          <span className="text-lg">
+          <span className="text-lg" aria-live="polite">
             Page {currentPage} sur {totalPages}
           </span>
 
           <button
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
+            aria-label="Page suivante"
             className={`px-6 py-2 rounded-md transition-all duration-300 ease-in-out ${
-              currentPage === totalPages ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
+              currentPage === totalPages
+                ? "bg-gray-300 cursor-not-allowed"
+                : "bg-blue-500 hover:bg-blue-600 text-white"
             }`}
           >
             Suivant
