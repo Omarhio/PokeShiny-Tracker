@@ -116,11 +116,24 @@ export default function Captures() {
           onChange={(e) => setSelectedType(e.target.value)}
           className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
         >
-          <option value="all">Tous les type</option>
+          <option value="all">Tous les types</option>
+          <option value="Normal">Normal</option>
           <option value="Feu">Feu</option>
           <option value="Eau">Eau</option>
           <option value="Plante">Plante</option>
           <option value="Électrique">Électrique</option>
+          <option value="Glace">Glace</option>
+          <option value="Vol">Vol</option>
+          <option value="Roche">Roche</option>
+          <option value="Sol">Sol</option>
+          <option value="Insecte">Insecte</option>
+          <option value="Poison">Poison</option>
+          <option value="Psy">Psy</option>
+          <option value="Ténèbres">Ténèbres</option>
+          <option value="Spectre">Spectre</option>
+          <option value="Acier">Acier</option>
+          <option value="Combat">Combat</option>
+          <option value="Dragon">Dragon</option>
           {/* Ajouter les autres type ici */}
         </select>
       </div>
