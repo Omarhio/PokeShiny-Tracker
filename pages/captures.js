@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react'
-import MainLayout from '../layouts/MainLayout'
-import PokemonCard from '../components/PokemonCard'
-import { pokemonList } from '../data/PokemonList'
+import { useState, useEffect } from 'react';
+import MainLayout from '../layouts/MainLayout';
+import PokemonCard from '../components/PokemonCard';
+import { pokemonList } from '../data/PokemonList';
 
 const itemsPerPage = 24;
 
@@ -9,14 +9,13 @@ export default function Captures() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGeneration, setSelectedGeneration] = useState("all");
+  const [selectedType, setSelectedType] = useState("all");
+  const [sortOption, setSortOption] = useState("pokedexNumber");
 
   const filteredPokemons = pokemonList.filter((pokemon) => {
     const lowerCaseSearchTerm = searchTerm.toLowerCase();
-
     const isPokedexMatch = pokemon.pokedexNumber.toString() === searchTerm;
-
     const isNameMatch = pokemon.name.toLowerCase().includes(lowerCaseSearchTerm);
-
     const isGenerationMatch =
       selectedGeneration === "all" ||
       (selectedGeneration === "1" && pokemon.pokedexNumber <= 151) ||
@@ -25,10 +24,21 @@ export default function Captures() {
       (selectedGeneration === "4" && pokemon.pokedexNumber > 387 && pokemon.pokedexNumber <= 493) ||
       (selectedGeneration === "5" && pokemon.pokedexNumber > 494 && pokemon.pokedexNumber <= 649);
 
-    return (isPokedexMatch || isNameMatch) && isGenerationMatch;
+    const isTypeMatch = selectedType === "all" || pokemon.type.includes(selectedType);
+
+    return (isPokedexMatch || isNameMatch) && isGenerationMatch && isTypeMatch;
   });
 
-  const totalPages = Math.ceil(filteredPokemons.length / itemsPerPage);
+  // Tri par nom ou numéro du Pokédex
+  const sortedPokemons = filteredPokemons.sort((a, b) => {
+    if (sortOption === "name") {
+      return a.name.localeCompare(b.name);
+    } else {
+      return a.pokedexNumber - b.pokedexNumber;
+    }
+  });
+
+  const totalPages = Math.ceil(sortedPokemons.length / itemsPerPage);
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -37,7 +47,7 @@ export default function Captures() {
   }, [currentPage, totalPages]);
 
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const selectedPokemons = filteredPokemons.slice(startIndex, startIndex + itemsPerPage);
+  const selectedPokemons = sortedPokemons.slice(startIndex, startIndex + itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -67,7 +77,7 @@ export default function Captures() {
       </div>
 
       {/* Filtre par génération */}
-      <div className="flex justify-center mb-8">
+      <div className="flex justify-center mb-4">
         <select
           value={selectedGeneration}
           onChange={(e) => setSelectedGeneration(e.target.value)}
@@ -82,6 +92,35 @@ export default function Captures() {
         </select>
       </div>
 
+      {/* Filtre par type */}
+      <div className="flex justify-center mb-4">
+        <select
+          value={selectedType}
+          onChange={(e) => setSelectedType(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+        >
+          <option value="all">Tous les type</option>
+          <option value="Feu">Feu</option>
+          <option value="Eau">Eau</option>
+          <option value="Plante">Plante</option>
+          <option value="Électrique">Électrique</option>
+          {/* Ajouter les autres type ici */}
+        </select>
+      </div>
+
+      {/* Option de tri */}
+      <div className="flex justify-center mb-8">
+        <select
+          value={sortOption}
+          onChange={(e) => setSortOption(e.target.value)}
+          className="px-4 py-2 border border-gray-300 rounded-md shadow-sm"
+        >
+          <option value="pokedexNumber">Numéro du Pokédex</option>
+          <option value="name">Nom</option>
+        </select>
+      </div>
+
+      {/* Liste des Pokémon */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 container mx-auto">
         {selectedPokemons.map((pokemon) => (
           <PokemonCard
@@ -93,7 +132,7 @@ export default function Captures() {
         ))}
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex justify-center items-center mt-8 mb-16 space-x-4">
           <button
@@ -122,5 +161,5 @@ export default function Captures() {
         </div>
       )}
     </MainLayout>
-  )
+  );
 }
