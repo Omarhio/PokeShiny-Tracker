@@ -9,7 +9,7 @@ export default function MainLayout({ children }) {
         {children}
       </main>
       <footer className="bg-gray-800 text-white text-center p-4">
-        <p>© 2024 PokéShiny Tracker</p>
+        <p>&copy; 2024 PokéShiny Tracker</p>
       </footer>
     </div>
   );

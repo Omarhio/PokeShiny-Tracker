@@ -16,8 +16,13 @@ export default function Header() {
             </Link>
           </li>
           <li>
-            <Link href="/captures" className={router.pathname === '/captures' ? 'underline' : ''}>
-              Captures
+            <Link href="/pokelist" className={router.pathname === '/pokelist' ? 'underline' : ''}>
+            PokeList
+            </Link>
+          </li>
+          <li>
+          <Link href="/captured" className={router.pathname === '/captured' ? 'underline' : ''}>
+            Capture
             </Link>
           </li>
         </ul>
